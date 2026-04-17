@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useIsMobile } from '../hooks/useMediaQuery'
+import { useInView } from '../hooks/useInView'
 
 const items = [
   {
@@ -29,48 +30,56 @@ const items = [
   },
 ]
 
-function GalleryCard({ item, index, isMobile }) {
+function GalleryCard({ item, index, isMobile, inView }) {
   const [hovered, setHovered] = useState(false)
 
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className={`fade-up${inView ? ' visible' : ''} delay-${Math.min(index + 1, 6)}`}
       style={{
         gridColumn: isMobile ? 'span 1' : (index === 0 ? 'span 2' : 'span 1'),
         aspectRatio: index === 0 && !isMobile ? '16/9' : '4/3',
         position: 'relative',
         overflow: 'hidden',
-        border: '1px solid var(--border)',
+        border: hovered ? '1px solid rgba(201,168,76,0.4)' : '1px solid var(--border)',
         cursor: 'pointer',
+        transition: 'border 0.4s ease, opacity 0.75s ease, transform 0.75s ease',
       }}
     >
       <img
         src={item.img}
         alt={item.label}
         style={{
-          width: '100%',
-          height: '100%',
+          width: '100%', height: '100%',
           objectFit: 'cover',
           transform: hovered ? 'scale(1.06)' : 'scale(1)',
-          transition: 'transform 0.6s ease',
+          transition: 'transform 0.7s ease',
           display: 'block',
         }}
       />
-      {/* Label always visible on mobile, hover on desktop */}
+      {/* Gold shimmer overlay on hover */}
       <div style={{
         position: 'absolute', inset: 0,
-        background: 'linear-gradient(to top, rgba(10,8,9,0.85) 0%, transparent 60%)',
+        background: 'linear-gradient(135deg, rgba(201,168,76,0.06), transparent)',
+        opacity: hovered ? 1 : 0,
+        transition: 'opacity 0.4s',
+      }} />
+      {/* Label overlay */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(to top, rgba(10,8,9,0.88) 0%, transparent 55%)',
         opacity: isMobile ? 1 : hovered ? 1 : 0,
         transition: 'opacity 0.4s',
-        display: 'flex',
-        alignItems: 'flex-end',
+        display: 'flex', alignItems: 'flex-end',
         padding: '1.25rem',
       }}>
         <span style={{
           fontFamily: 'Cormorant Garant, serif',
-          fontSize: '1rem',
-          color: 'var(--gold-light)',
+          fontSize: '1rem', color: 'var(--gold-light)',
+          transform: hovered ? 'translateY(0)' : 'translateY(6px)',
+          transition: 'transform 0.4s ease',
         }}>{item.label}</span>
       </div>
     </div>
@@ -79,6 +88,8 @@ function GalleryCard({ item, index, isMobile }) {
 
 export default function Gallery() {
   const isMobile = useIsMobile()
+  const [headerRef, headerInView] = useInView()
+  const [gridRef, gridInView] = useInView()
 
   return (
     <section id="gallery" style={{
@@ -86,22 +97,26 @@ export default function Gallery() {
       background: '#0a0809',
     }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <p className="section-label" style={{ marginBottom: '1.5rem' }}>The Collection</p>
-          <h2 style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', fontWeight: 300 }}>
+
+        <div ref={headerRef} style={{ textAlign: 'center', marginBottom: '4rem' }}>
+          <p className={`section-label fade-up${headerInView ? ' visible' : ''} delay-1`}
+            style={{ marginBottom: '1.5rem' }}>The Collection</p>
+          <h2 className={`fade-up${headerInView ? ' visible' : ''} delay-2`}
+            style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', fontWeight: 300 }}>
             Step Inside the{' '}
             <em style={{ fontStyle: 'italic', color: 'var(--gold-light)' }}>Emporium</em>
           </h2>
-          <span className="gold-rule" style={{ marginTop: '1.5rem' }} />
+          <span className={`gold-rule fade-in${headerInView ? ' visible' : ''} delay-3`}
+            style={{ marginTop: '1.5rem' }} />
         </div>
 
-        <div style={{
+        <div ref={gridRef} style={{
           display: 'grid',
           gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
           gap: '0.75rem',
         }}>
           {items.map((item, i) => (
-            <GalleryCard key={i} item={item} index={i} isMobile={isMobile} />
+            <GalleryCard key={i} item={item} index={i} isMobile={isMobile} inView={gridInView} />
           ))}
         </div>
       </div>

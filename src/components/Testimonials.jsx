@@ -1,4 +1,5 @@
 import { useIsMobile } from '../hooks/useMediaQuery'
+import { useInView } from '../hooks/useInView'
 
 const testimonials = [
   {
@@ -23,6 +24,8 @@ const testimonials = [
 
 export default function Testimonials() {
   const isMobile = useIsMobile()
+  const [headerRef, headerInView] = useInView()
+  const [cardsRef, cardsInView] = useInView()
 
   return (
     <section id="testimonials" style={{
@@ -30,47 +33,49 @@ export default function Testimonials() {
       background: '#0a0809',
     }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <p className="section-label" style={{ marginBottom: '1.5rem' }}>Kind Words</p>
-          <h2 style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', fontWeight: 300 }}>
+
+        <div ref={headerRef} style={{ textAlign: 'center', marginBottom: '4rem' }}>
+          <p className={`section-label fade-up${headerInView ? ' visible' : ''} delay-1`}
+            style={{ marginBottom: '1.5rem' }}>Kind Words</p>
+          <h2 className={`fade-up${headerInView ? ' visible' : ''} delay-2`}
+            style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', fontWeight: 300 }}>
             From Our{' '}
             <em style={{ fontStyle: 'italic', color: 'var(--gold-light)' }}>Community</em>
           </h2>
-          <span className="gold-rule" style={{ marginTop: '1.5rem' }} />
-          <p style={{
-            color: 'var(--text-muted)',
-            marginTop: '1.5rem',
-            fontSize: '0.85rem',
-            letterSpacing: '0.1em',
-          }}>
+          <span className={`gold-rule fade-in${headerInView ? ' visible' : ''} delay-3`}
+            style={{ marginTop: '1.5rem' }} />
+          <p className={`fade-up${headerInView ? ' visible' : ''} delay-4`}
+            style={{ color: 'var(--text-muted)', marginTop: '1.5rem', fontSize: '0.85rem', letterSpacing: '0.1em' }}>
             ★ 4.7 · 355 Reviews on Google
           </p>
         </div>
 
-        <div style={{
+        <div ref={cardsRef} style={{
           display: 'grid',
           gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))',
           gap: '1.5rem',
         }}>
           {testimonials.map((t, i) => (
-            <div key={i} style={{
-              background: 'var(--deep)',
-              border: '1px solid var(--border)',
-              padding: isMobile ? '2rem 1.5rem' : '2.5rem',
-              position: 'relative',
-            }}>
+            <div key={i}
+              className={`testimonial-card fade-up${cardsInView ? ' visible' : ''} delay-${i + 1}`}
+              style={{
+                background: 'var(--deep)',
+                border: '1px solid var(--border)',
+                padding: isMobile ? '2rem 1.5rem' : '2.5rem',
+                position: 'relative',
+              }}
+            >
               <div style={{
-                position: 'absolute', top: '1.5rem', left: isMobile ? '1.5rem' : '2.5rem',
+                position: 'absolute', top: '1.5rem',
+                left: isMobile ? '1.5rem' : '2.5rem',
                 fontFamily: 'Cormorant Garant, serif',
                 fontSize: '5rem', lineHeight: 1,
                 color: 'var(--gold)', opacity: 0.15,
               }}>"</div>
 
               <div style={{
-                color: 'var(--gold)',
-                fontSize: '0.8rem',
-                marginBottom: '1.25rem',
-                letterSpacing: '0.1em',
+                color: 'var(--gold)', fontSize: '0.8rem',
+                marginBottom: '1.25rem', letterSpacing: '0.1em',
               }}>
                 {'★'.repeat(t.stars)}
               </div>
@@ -88,10 +93,8 @@ export default function Testimonials() {
               <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1.25rem' }}>
                 <p style={{ color: 'var(--cream)', fontSize: '0.85rem', fontWeight: 400 }}>{t.name}</p>
                 <p style={{
-                  color: 'var(--text-muted)',
-                  fontSize: '0.72rem',
-                  marginTop: '0.25rem',
-                  letterSpacing: '0.05em',
+                  color: 'var(--text-muted)', fontSize: '0.72rem',
+                  marginTop: '0.25rem', letterSpacing: '0.05em',
                 }}>{t.detail}</p>
               </div>
             </div>
