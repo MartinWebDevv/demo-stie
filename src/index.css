@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --black:       #0a0809;
+  --deep:        #100d14;
+  --purple-dark: #1a1025;
+  --purple-mid:  #2d1f45;
+  --purple-glow: #6b3fa0;
+  --gold:        #c9a84c;
+  --gold-light:  #e8cc7e;
+  --gold-dim:    #7a6030;
+  --cream:       #f0e6d3;
+  --text-muted:  #9b8faa;
+  --border:      rgba(201,168,76,0.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--black);
+  color: var(--cream);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* noise texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Cormorant Garant', serif;
+  font-weight: 600;
+}
+
+.section-label {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.gold-rule {
+  display: block;
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  margin: 0 auto;
+}
+
+.glow-btn {
+  display: inline-block;
+  padding: 0.75rem 2.5rem;
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 0.8rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: transparent;
+}
+
+.glow-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(107,63,160,0.12));
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.glow-btn:hover::before { opacity: 1; }
+.glow-btn:hover {
+  box-shadow: 0 0 30px rgba(201,168,76,0.25), inset 0 0 20px rgba(201,168,76,0.05);
+  color: var(--gold-light);
+}
